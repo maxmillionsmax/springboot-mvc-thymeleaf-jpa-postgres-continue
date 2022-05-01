@@ -13,10 +13,9 @@
 	href="/materialize/css/materialize.min.css" media="screen,projection" />
 
 <style type="text/css">
-form input[type=submit]{
-color: white;
+form input[type=submit] {
+	color: white;
 }
-
 </style>
 </head>
 <body>
@@ -25,6 +24,12 @@ color: white;
 	<h3>Cadastro de pessoas</h3>
 
 	<div class="row">
+
+		<br/>
+		   <div th:each="m : ${msg}">
+			  <span th:text="${m}"></span>
+		  </div>
+		<br/>
 
 		<form action="salvarpessoa" id="formPessoa" method="post"
 			th:object="${pessoaobj}" class="col s12">
@@ -66,8 +71,8 @@ color: white;
 				<div class="input-fiel col s12">
 					<label>Pesquisar por nome</label> <input name="nomepesquisa">
 					<input class="waves-effect waves-light btn" type="submit"
-						value="Buscar">
-					<a class="waves-effect waves-light btn" href="/listapessoas">Lista de Pessoas</a>	
+						value="Buscar"> <a class="waves-effect waves-light btn"
+						href="/listapessoas">Lista de Pessoas</a>
 				</div>
 			</div>
 		</form>
@@ -76,20 +81,21 @@ color: white;
 	<br />
 	<br />
 	<table class="striped">
-	<thead>
-	<tr>
-	<th>ID</th>
-	<th>Nome</th>
-	<th>Sobrenome</th>
-	<th>Idade</th>
-	<th>Editar</th>
-	<th>Excluir</th>
-	</tr>
-	
-	</thead>
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>Nome</th>
+				<th>Sobrenome</th>
+				<th>Idade</th>
+				<th>Editar</th>
+				<th>Excluir</th>
+			</tr>
+
+		</thead>
 		<tr th:each="pessoa :${pessoas}">
 			<td th:text="${pessoa.id}"></td>
-			<td><a th:href="@{/telefones/{idpessoa}(idpessoa=${pessoa.id})}"><span th:text="${pessoa.nome}"></span></a></td>
+			<td><a th:href="@{/telefones/{idpessoa}(idpessoa=${pessoa.id})}"><span
+					th:text="${pessoa.nome}"></span></a></td>
 			<td th:text="${pessoa.sobrenome}"></td>
 			<td th:text="${pessoa.idade}"></td>
 			<td><a
