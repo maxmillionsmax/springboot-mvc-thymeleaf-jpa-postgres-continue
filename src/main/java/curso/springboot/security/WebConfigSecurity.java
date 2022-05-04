@@ -11,9 +11,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @EnableWebSecurity
+@EnableWebMvc
 public class WebConfigSecurity extends WebSecurityConfigurerAdapter{
 	
 	@Autowired
@@ -22,13 +24,18 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter{
 	@Override// Configura as solicitações de acesso por Http
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf()
-		.disable()
-		.authorizeRequests()
-		.antMatchers(HttpMethod.GET, "/").permitAll()
-		.antMatchers(HttpMethod.GET, "/cadastropessoa").hasRole("ADMIN")
+		.disable() // Desativa as configurações padrão de memória.
+		.authorizeRequests() // Pertimi restringir acessos
+		.antMatchers(HttpMethod.GET, "/").permitAll() // Qualquer usuário acessa a pagina inicial
+		.antMatchers(HttpMethod.GET, "/cadastropessoa").hasAnyRole("ADMIN")
 		.anyRequest().authenticated()
-		.and().formLogin().permitAll()
-		.and().logout()
+		.and().formLogin().permitAll()// permite qualquer usuário
+        .loginPage("/login")
+        .defaultSuccessUrl("/cadastropessoa")
+        .failureUrl("/login?error=true")
+        .and()
+        .logout().logoutSuccessUrl("/login")
+		// Mapeia URL de Logout e invalida usuário autenticado
 		.logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
 	}
 	
@@ -44,7 +51,8 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter{
 	}
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/materialize/**");
+		 web.ignoring().antMatchers("/materialize/**")
+         .antMatchers(HttpMethod.GET,"/resources/**","/static/**", "/**");
 	}
 
 }
